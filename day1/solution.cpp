@@ -4,7 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 
 std::vector<std::string> extractLinesFromInputFile (std::string fileName) {
     std::ifstream inputFile(fileName);
@@ -35,7 +35,7 @@ int part1 (std::vector<std::string> linesFromInputFile) {
 
 int part2 (const std::vector<std::string>& linesFromInputFile) {
     int sum = 0;
-    std::map<int, int> left, right;
+    std::unordered_map<int, int> left, right;
     for (std::string line : linesFromInputFile) {
         std::istringstream lineStream(line);
         int l, r;
