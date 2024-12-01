@@ -2,7 +2,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <sstream>
 #include <algorithm>
+#include <map>
 
 std::vector<std::string> extractLinesFromInputFile (std::string fileName) {
     std::ifstream inputFile(fileName);
@@ -18,8 +20,11 @@ int part1 (std::vector<std::string> linesFromInputFile) {
     std::vector<int> left;
     std::vector<int> right;
     for (std::string line : linesFromInputFile) {
-        left.push_back(stoi(line));
-        right.push_back(stoi(line.substr(6)));
+        std::istringstream lineStream(line);
+        int l, r;
+        lineStream >> l >> r;
+        left.push_back(l);
+        right.push_back(r);
     }
     std::sort(left.begin(), left.end());
     std::sort(right.begin(), right.end());
@@ -30,20 +35,20 @@ int part1 (std::vector<std::string> linesFromInputFile) {
 
 int part2 (const std::vector<std::string>& linesFromInputFile) {
     int sum = 0;
-    std::vector<int> left, right;
+    std::map<int, int> left, right;
     for (std::string line : linesFromInputFile) {
-        left.push_back(stoi(line));
-        right.push_back(stoi(line.substr(6)));
+        std::istringstream lineStream(line);
+        int l, r;
+        lineStream >> l >> r;
+        if (left.count(l))
+            left[l]++;
+        else left[l] = 1;
+        if (right.count(r))
+            right[r]++;
+        else right[r] = 1;
     }
-    std::sort(left.begin(), left.end());
-    std::sort(right.begin(), right.end());
-    for (int i = 0; i < left.size(); i++) {
-        int counter = 0;
-        for (int j = 0; j < left.size(); j++)
-            if (right[j] == left[i])
-                counter++;
-        sum += left[i] * counter;
-    }
+    for (const auto& [key, value] : left)
+        sum += value * key * right[key];
     return sum;
 }
 
