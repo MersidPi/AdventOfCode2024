@@ -23,10 +23,8 @@ int part1 (std::vector<std::string> m) {
         for (int j = 0; j < N; j++) { 
             if (m[i][j] == '.') 
                 continue;
-            for (int k = i, l = j; k < M; k++) {
-                if (k != i)
-                    l = 0;
-                for (; l < N; l++) {
+            for (int k = i; k < M; k++) {
+                for (int l = 0; l < N; l++) {
                     if (m[k][l] != m[i][j] || k == i && l == j) 
                         continue;
                     if (k + (k - i) < M && k + (k - i) >= 0 
@@ -52,9 +50,7 @@ int part2 (std::vector<std::string> m) {
         for (int j = 0; j < N; j++) { 
             if (m[i][j] == '.') 
                 continue;
-            for (int k = i, l = j; k < M; k++) {
-                if (k != i)
-                    l = 0;
+            for (int k = i; k < M; k++) {
                 for (int l = 0; l < N; l++) {
                     if (m[k][l] != m[i][j] || k == i && l == j) 
                         continue;
@@ -69,14 +65,6 @@ int part2 (std::vector<std::string> m) {
                             && j - p * (l - j) < N && j - p * (l - j) >= 0){
                         coords.insert({i - p * (k - i), j - p * (l - j)});
                         p++;
-                    }
-                    if (k + (k - i) < M && k + (k - i) >= 0 
-                            && l + (l - j) < N && l + (l - j) >= 0) {
-                        coords.insert({k + (k - i), l + (l - j)});
-                    }
-                    if (i - (k - i) < M && i - (k - i) >= 0 
-                            && j - (l - j) < N && j - (l - j) >= 0) {
-                        coords.insert({i - (k - i), j - (l - j)});
                     }
                 }
             }
