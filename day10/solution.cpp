@@ -19,84 +19,56 @@ std::set<std::pair<int,int>> coords;
 std::map<std::pair<int,int>, int> coordsMap;
 int M, N;
 
-void climb (const std::vector<std::vector<int>> &m, int i, int j) {
+void climb (const std::vector<std::vector<int>> &m, int i, int j, bool part1) {
     if (m[i][j] == 9) {
-        coords.insert({i, j});
-        coordsMap[{i, j}]++;
+        if (part1)
+            coords.insert({i, j});
+        else
+            coordsMap[{i, j}]++;
         return;
     }
-    if (j < N - 1 && m[i][j + 1] == m[i][j] + 1) {
-        climb(m, i, j + 1);
-    }
-    if (j > 0 && m[i][j - 1] == m[i][j] + 1) {
-        climb(m, i, j - 1);
-    }
-    if (i < M - 1 && m[i + 1][j] == m[i][j] + 1) {
-        climb(m, i + 1, j);
-    }
-    if (i > 0 && m[i - 1][j] == m[i][j] + 1) {
-        climb(m, i - 1, j);
-    }
+    if (j < N - 1 && m[i][j + 1] == m[i][j] + 1)
+        climb(m, i, j + 1, part1);
+    if (j > 0 && m[i][j - 1] == m[i][j] + 1)
+        climb(m, i, j - 1, part1);
+    if (i < M - 1 && m[i + 1][j] == m[i][j] + 1)
+        climb(m, i + 1, j, part1);
+    if (i > 0 && m[i - 1][j] == m[i][j] + 1)
+        climb(m, i - 1, j, part1);
 }
 
 int part1 (std::vector<std::string> m) {
     int sum = 0;
     M = m.size(), N = m[0].size();
-    std::vector<std::vector<int>> mm;
-    for (auto x : m) {
-        mm.push_back({});
-        for (auto y : x)
-            mm[mm.size() - 1].push_back(y - '0');
-    }
-    // for (auto x : m) {
-        
-    //     for (auto y : x)
-    //         std::cout << y << ' ';
-    //     std::cout << std::endl;
-    // }
-    for (int i = 0; i < M; i++) {
-        for (int j = 0; j < N; j++) {
-            if (mm[i][j] == 0) {
-                climb(mm, i, j);
+    std::vector<std::vector<int>> mInt(M, std::vector<int>(N));
+    for (int i = 0; i < M; i++)
+        for (int j = 0; j < N; j++)
+            mInt[i][j] = m[i][j] - '0';
+    for (int i = 0; i < M; i++)
+        for (int j = 0; j < N; j++)
+            if (mInt[i][j] == 0) {
+                climb(mInt, i, j, true);
                 sum += coords.size();
-                // std::cout << coords.size() << " to je dodano\n";
                 coords.clear();
             }
-        }
-    }
-    // sum = coords.size();
     return sum;
 }
 
 int part2 (std::vector<std::string> m) {
     int sum = 0;
     M = m.size(), N = m[0].size();
-    std::vector<std::vector<int>> mm;
-    for (auto x : m) {
-        mm.push_back({});
-        for (auto y : x)
-            mm[mm.size() - 1].push_back(y - '0');
-    }
-    // for (auto x : m) {
-        
-    //     for (auto y : x)
-    //         std::cout << y << ' ';
-    //     std::cout << std::endl;
-    // }
-    for (int i = 0; i < M; i++) {
-        for (int j = 0; j < N; j++) {
-            if (mm[i][j] == 0) {
-                climb(mm, i, j);
-                for (auto [key, val] : coordsMap){
+    std::vector<std::vector<int>> mInt(M, std::vector<int>(N));
+    for (int i = 0; i < M; i++)
+        for (int j = 0; j < N; j++)
+            mInt[i][j] = m[i][j] - '0';
+    for (int i = 0; i < M; i++)
+        for (int j = 0; j < N; j++)
+            if (mInt[i][j] == 0) {
+                climb(mInt, i, j, false);
+                for (auto [key, val] : coordsMap)
                     sum += val;
-                    // std::cout << val << " to je dodano\n";
-                }
-
                 coordsMap.clear();
             }
-        }
-    }
-    // sum = coords.size();
     return sum;
 }
 
