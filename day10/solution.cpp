@@ -15,66 +15,39 @@ std::vector<std::string> extractLinesFromInputFile (std::string fileName) {
     return lines;
 }
 
-std::set<std::pair<int,int>> coords;
 std::map<std::pair<int,int>, int> coordsMap;
-int M, N;
+int part1result = 0, part2result = 0;
 
-void climb (const std::vector<std::vector<int>> &m, int i, int j, bool part1) {
-    if (m[i][j] == 9) {
-        if (part1)
-            coords.insert({i, j});
-        else
-            coordsMap[{i, j}]++;
+void climb (const std::vector<std::string> &m, int i, int j) {
+    if (m[i][j] == '9') {
+        coordsMap[{i, j}]++;
         return;
     }
-    if (j < N - 1 && m[i][j + 1] == m[i][j] + 1)
-        climb(m, i, j + 1, part1);
+    if (j < m[i].size() - 1 && m[i][j + 1] == m[i][j] + 1)
+        climb(m, i, j + 1);
     if (j > 0 && m[i][j - 1] == m[i][j] + 1)
-        climb(m, i, j - 1, part1);
-    if (i < M - 1 && m[i + 1][j] == m[i][j] + 1)
-        climb(m, i + 1, j, part1);
+        climb(m, i, j - 1);
+    if (i < m.size() - 1 && m[i + 1][j] == m[i][j] + 1)
+        climb(m, i + 1, j);
     if (i > 0 && m[i - 1][j] == m[i][j] + 1)
-        climb(m, i - 1, j, part1);
+        climb(m, i - 1, j);
 }
 
-int part1 (std::vector<std::string> m) {
-    int sum = 0;
-    M = m.size(), N = m[0].size();
-    std::vector<std::vector<int>> mInt(M, std::vector<int>(N));
-    for (int i = 0; i < M; i++)
-        for (int j = 0; j < N; j++)
-            mInt[i][j] = m[i][j] - '0';
-    for (int i = 0; i < M; i++)
-        for (int j = 0; j < N; j++)
-            if (mInt[i][j] == 0) {
-                climb(mInt, i, j, true);
-                sum += coords.size();
-                coords.clear();
-            }
-    return sum;
-}
-
-int part2 (std::vector<std::string> m) {
-    int sum = 0;
-    M = m.size(), N = m[0].size();
-    std::vector<std::vector<int>> mInt(M, std::vector<int>(N));
-    for (int i = 0; i < M; i++)
-        for (int j = 0; j < N; j++)
-            mInt[i][j] = m[i][j] - '0';
-    for (int i = 0; i < M; i++)
-        for (int j = 0; j < N; j++)
-            if (mInt[i][j] == 0) {
-                climb(mInt, i, j, false);
+void part1And2 (std::vector<std::string> m) {
+    for (int i = 0; i < m.size(); i++)
+        for (int j = 0; j < m[i].size(); j++)
+            if (m[i][j] == '0') {
+                climb(m, i, j);
+                part1result += coordsMap.size();
                 for (auto [key, val] : coordsMap)
-                    sum += val;
+                    part2result += val;
                 coordsMap.clear();
             }
-    return sum;
 }
 
 int main () {
-    std::vector<std::string> linesFromInputFile = extractLinesFromInputFile("input.txt");
-    int part1result = part1(linesFromInputFile); std::cout << "\nPart 1: " << part1result << "\n";
-    int part2result = part2(linesFromInputFile); std::cout << "Part 2: " << part2result << "\n\n";
+    part1And2(extractLinesFromInputFile("input.txt"));
+    std::cout << "\nPart 1: " << part1result << "\n";
+    std::cout << "Part 2: " << part2result << "\n\n";
     return 0;
 }
