@@ -62,13 +62,11 @@ ull calc (ull number, ull numOfIterations) {
 
 ull part1 (std::vector<std::string> m) {
     std::vector<ull> vec;
-    for (std::string line : m) {
-        std::istringstream lineStream(line);
-        ull l;
-        while (!lineStream.eof()) {
-            lineStream >> l;
-            vec.push_back(l);
-        }
+    std::istringstream lineStream(m[0]);
+    ull l;
+    while (!lineStream.eof()) {
+        lineStream >> l;
+        vec.push_back(l);
     }
     for (ull c = 0; c < 25; c++)
         for (ull i = 0; i < vec.size(); i++) {
@@ -90,13 +88,11 @@ ull part1 (std::vector<std::string> m) {
 ull part2 (std::vector<std::string> m) {
     ull sum = 0;
     std::vector<ull> vec;
-    for (std::string line : m) {
-        std::istringstream lineStream(line);
-        ull l;
-        while (!lineStream.eof()) {
-            lineStream >> l;
-            vec.push_back(l);
-        }
+    std::istringstream lineStream(m[0]);
+    ull l;
+    while (!lineStream.eof()) {
+        lineStream >> l;
+        vec.push_back(l);
     }
     for (auto x : vec)
         sum += calc(x, 75);
