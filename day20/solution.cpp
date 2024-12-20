@@ -49,9 +49,7 @@ ull part1 (std::vector<std::string> lines) {
             }
         }
     }
-
     ull costWithoutCheats = 0;
-    bool terminira = false;
     std::map<node, std::vector<node>> visited;
     std::map<node, int> costs;
     std::priority_queue<node,std::vector<node>,std::greater<node>> red;
@@ -66,7 +64,6 @@ ull part1 (std::vector<std::string> lines) {
         if (i == endI  && j == endJ) {
             costWithoutCheats = cost;
             break;
-            // return cost;
         }
         if (m[i][j + 1] != '#') {
             cost += 1;
@@ -124,9 +121,7 @@ ull part1 (std::vector<std::string> lines) {
             }
         }
     }
-
     std::vector<std::vector<double>> costsMatrix(m.size(), std::vector<double>(m[0].size()));
-
     for (int i = 0; i < m.size(); i++) {
         for (int j = 0; j < m[0].size(); j++) {
             if (m[i][j] == '#')
@@ -134,145 +129,20 @@ ull part1 (std::vector<std::string> lines) {
             else costsMatrix[i][j] = 0;
         }
     }
-    for (auto [k, v] : costs) {
-        // std::cout << ' ' <<  std::get<1>(k) << ' ' << std::get<2>(k) << " cost: " << v << '\n';
+    for (auto [k, v] : costs)
         costsMatrix[std::get<1>(k)][std::get<2>(k)] = v;
-    }
-
-    ull minSaving = 100 + 2;
-
     for (int i = 0; i < m.size(); i++) {
         for (int j = 0; j < m[0].size(); j++) {
             if (i > 0 && i < m.size() - 1 && j > 0 && j < m[0].size() - 1 && m[i][j] == '#') {
-                int b1 = m[i-1][j] == '.';
-                int b2 = m[i+1][j] == '.';
-                int b3 = m[i][j-1] == '.';
-                int b4 = m[i][j+1] == '.';
-
-                if (b1 + b2 + b3 + b4 >= 2) {
-                    // m[i][j] = '.';
-                    if (   std::abs(costsMatrix[i-1][j] - costsMatrix[i][j-1]) >= minSaving
-                        || std::abs(costsMatrix[i-1][j] - costsMatrix[i][j+1]) >= minSaving 
-                        || std::abs(costsMatrix[i-1][j] - costsMatrix[i+1][j]) >= minSaving
-                        || std::abs(costsMatrix[i+1][j] - costsMatrix[i][j-1]) >= minSaving
-                        || std::abs(costsMatrix[i+1][j] - costsMatrix[i][j+1]) >= minSaving                    
-                        || std::abs(costsMatrix[i][j-1] - costsMatrix[i][j+1]) >= minSaving)
-                    sum++;
-                }
-                else continue;
-            }
-            else continue;
-        }
-    }
-    return sum;
-
-
-    std::map<ull,ull> map;
-
-    if (false) for (int I = 0; I < m.size(); I++) {
-        for (int J = 0; J < m[0].size(); J++) {
-            if (I > 0 && I < m.size() - 1 && J > 0 && J < m[0].size() - 1 && m[I][J] == '#') {
-                int b1 = m[I-1][J] == '.';
-                int b2 = m[I+1][J] == '.';
-                int b3 = m[I][J-1] == '.';
-                int b4 = m[I][J+1] == '.';
-                if (b1 + b2 + b3 + b4 >= 2)
-                    m[I][J] = '.';
-                else continue;
-            }
-            else continue;
-            ull costWithCheat = 0;
-            bool terminira = false;
-            std::map<node, std::vector<node>> visited;
-            std::map<node, int> costs;
-            std::priority_queue<node,std::vector<node>,std::greater<node>> red;
-            red.push({0,startI,startJ});
-            while (!red.empty()) {
-                node top = red.top();
-                red.pop();
-                int costOld = std::get<0>(top);
-                int cost = costOld;
-                int i = std::get<1>(top);
-                int j = std::get<2>(top);
-                if (i == endI  && j == endJ) {
-                    costWithCheat = cost;
-                    break;
-                    // return cost;
-                }
-                if (m[i][j + 1] != '#') {
-                    cost += 1;
-                    node sljedeci = {0, i, j + 1};
-                    if (costs.count(sljedeci) == 0 || costs[sljedeci] > cost) {
-                        costs[sljedeci] = cost;
-                        red.push({cost, i, j + 1});
-                        visited[sljedeci].clear();
-                        visited[sljedeci].push_back({0, i, j});
-                    }
-                    else if (costs[sljedeci] == cost) {
-                        visited[sljedeci].push_back({0, i, j});
-                    }
-                }
-                cost = costOld;
-                 if (m[i][j - 1] != '#') {
-                        cost += 1;
-                    node sljedeci = {0, i, j - 1};
-                    if (costs.count(sljedeci) == 0 || costs[sljedeci] > cost) {
-                        costs[sljedeci] = cost;
-                        red.push({cost, i, j - 1});
-                        visited[sljedeci].clear();
-                        visited[sljedeci].push_back({0, i, j});
-                    }
-                    else if (costs[sljedeci] == cost) {
-                        visited[sljedeci].push_back({0, i, j});
-                    }
-                }
-                cost = costOld;
-                 if (m[i + 1][j] != '#') {
-                        cost += 1;
-                    node sljedeci = {0, i + 1, j};
-                    if (costs.count(sljedeci) == 0 || costs[sljedeci] > cost) {
-                        costs[sljedeci] = cost;
-                        red.push({cost, i + 1, j});
-                        visited[sljedeci].clear();
-                        visited[sljedeci].push_back({0, i, j});
-                    }
-                    else if (costs[sljedeci] == cost) {
-                        visited[sljedeci].push_back({0, i, j});
-                    }
-                }
-                cost = costOld;
-                 if (m[i - 1][j] != '#') {
-                        cost += 1;
-                    node sljedeci = {0, i - 1, j};
-                    if (costs.count(sljedeci) == 0 || costs[sljedeci] > cost) {
-                        costs[sljedeci] = cost;
-                        red.push({cost, i - 1, j});
-                        visited[sljedeci].clear();
-                        visited[sljedeci].push_back({0, i, j});
-                    }
-                    else if (costs[sljedeci] == cost) {
-                        visited[sljedeci].push_back({0, i, j});
-                    }
-                }
-            }
-            ull saved = costWithoutCheats - costWithCheat;
-            // std::cout << "saved " << costWithoutCheats - costWithCheat << " picoseconds\n";
-            if (saved >= 100) {
+                if (   std::abs(costsMatrix[i-1][j] - costsMatrix[i][j-1]) >= 102
+                    || std::abs(costsMatrix[i-1][j] - costsMatrix[i][j+1]) >= 102 
+                    || std::abs(costsMatrix[i-1][j] - costsMatrix[i+1][j]) >= 102
+                    || std::abs(costsMatrix[i+1][j] - costsMatrix[i][j-1]) >= 102
+                    || std::abs(costsMatrix[i+1][j] - costsMatrix[i][j+1]) >= 102                    
+                    || std::abs(costsMatrix[i][j-1] - costsMatrix[i][j+1]) >= 102)
                 sum++;
             }
-            map[saved]++;
-            m[I][J] = '#';
         }
-    }
-    for (auto x : m) {
-        for (auto y : x) {
-            std::cout << y << ' ';
-        }
-        std::cout << '\n';
-    }
-    for (auto [k, v] : map) {
-        
-        std::cout << k << ' ' << v << '\n';
     }
     return sum;
 }
@@ -295,9 +165,7 @@ ull part2 (std::vector<std::string> lines) {
             }
         }
     }
-
     ull costWithoutCheats = 0;
-    bool terminira = false;
     std::map<node, std::vector<node>> visited;
     std::map<node, int> costs;
     std::priority_queue<node,std::vector<node>,std::greater<node>> red;
@@ -312,7 +180,6 @@ ull part2 (std::vector<std::string> lines) {
         if (i == endI && j == endJ) {
             costWithoutCheats = cost;
             break;
-            // return cost;
         }
         if (m[i][j + 1] != '#') {
             cost += 1;
@@ -370,28 +237,14 @@ ull part2 (std::vector<std::string> lines) {
             }
         }
     }
-
-
-
     std::vector<std::vector<double>> costsMatrix(m.size(), std::vector<double>(m[0].size()));
-
     for (int i = 0; i < m.size(); i++)
         for (int j = 0; j < m[0].size(); j++)
             if (m[i][j] == '#')
                 costsMatrix[i][j] = std::numeric_limits<double>::quiet_NaN();
             else costsMatrix[i][j] = 0;
-    // std::cout << costsMatrix[startI][startJ] << " je cost prije updatea\n";
-    for (auto [k, v] : costs) {
+    for (auto [k, v] : costs)
         costsMatrix[std::get<1>(k)][std::get<2>(k)] = v;
-        // if(std::get<1>(k) == startI && std::get<2>(k) == startJ)
-        //     std::cout << v << " je cost na pocetku nakon updatea\n";
-    }
-    
-    // for (auto x : costsMatrix) {
-    //     for (auto y : x)
-    //         std::cout << y << ' ';
-    //     std::cout << '\n';
-    // }
     costsMatrix[startI][startJ] = 0;
     std::map<ull,ull> map;
     for (int i = 0; i < m.size(); i++) {
@@ -409,7 +262,6 @@ ull part2 (std::vector<std::string> lines) {
                             continue;
                         if (m[k][l] == '#')
                             continue;
-                        // m[k][l] = 'O';
                         if (costsMatrix[i][j] < costsMatrix[k][l] &&
                             std::abs(costsMatrix[i][j] + std::abs(i - k) + std::abs(j - l) - costsMatrix[k][l]) >= 100)
                             sum++,
@@ -426,15 +278,6 @@ ull part2 (std::vector<std::string> lines) {
             }
         }
     }
-    // for (auto x : m) {
-    //     for (auto y : x) {
-    //         std::cout << y;
-    //     }
-    //     std::cout << '\n';
-    // }
-    // for (auto [k, v] : map) {
-    //     std::cout << k << ' ' << v << '\n';
-    // }
     return sum;
 }
 
